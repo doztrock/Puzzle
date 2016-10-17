@@ -8,18 +8,21 @@ package interfaz;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author ivan
  */
-public class Interfaz extends javax.swing.JFrame {
+public class Interfaz extends JFrame implements KeyListener {
 
     /**
      * Creates new form Interfaz
@@ -68,30 +71,39 @@ public class Interfaz extends javax.swing.JFrame {
         panelContenedor.setLayout(new java.awt.GridLayout(3, 3));
 
         posicion_11.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_11.setName("posicion_11"); // NOI18N
         panelContenedor.add(posicion_11);
 
         posicion_12.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_12.setName("posicion_12"); // NOI18N
         panelContenedor.add(posicion_12);
 
         posicion_13.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_13.setName("posicion_13"); // NOI18N
         panelContenedor.add(posicion_13);
 
         posicion_21.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_21.setName("posicion_21"); // NOI18N
         panelContenedor.add(posicion_21);
 
         posicion_22.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_22.setName("posicion_22"); // NOI18N
         panelContenedor.add(posicion_22);
 
         posicion_23.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_23.setName("posicion_23"); // NOI18N
         panelContenedor.add(posicion_23);
 
         posicion_31.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_31.setName("posicion_31"); // NOI18N
         panelContenedor.add(posicion_31);
 
         posicion_32.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_32.setName("posicion_32"); // NOI18N
         panelContenedor.add(posicion_32);
 
         posicion_33.setFont(new java.awt.Font("Monospaced", 1, 24)); // NOI18N
+        posicion_33.setName("posicion_33"); // NOI18N
         panelContenedor.add(posicion_33);
 
         panelAdministrador.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -186,7 +198,10 @@ public class Interfaz extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        reproducirMusica("");
+
+        /*Asignamos los listeners a las posiciones del tablero*/
+        asignarListenerPosiciones();
+
     }//GEN-LAST:event_formWindowOpened
 
     private void botonEmpezarPausarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEmpezarPausarActionPerformed
@@ -302,6 +317,25 @@ public class Interfaz extends javax.swing.JFrame {
     private int ESTADO_JUEGO = JUEGO_NO_INICIADO;
 
     /**
+     * Direcciones de movimiento
+     */
+    private static final int ARRIBA = 1;
+    private static final int ABAJO = 2;
+    private static final int IZQUIERDA = 3;
+    private static final int DERECHA = 4;
+
+    /**
+     * Parametros de posicion
+     */
+    private static final int MAX_COLUMNAS = 3;
+    private static final int MAX_FILAS = 3;
+
+    /**
+     * Prefijo nombre posicion
+     */
+    private static final String PREFIJO_POSICION = "posicion_";
+
+    /**
      * Numeros a mostrar en el tablero
      */
     private final ArrayList<String> listadoNumeros = new ArrayList<>();
@@ -315,6 +349,12 @@ public class Interfaz extends javax.swing.JFrame {
      * Tiempo para reloj
      */
     private int segundos = 0;
+
+    /**
+     * Posicion
+     */
+    private int fila = 0;
+    private int columna = 0;
 
     /**
      * Musica
@@ -394,7 +434,6 @@ public class Interfaz extends javax.swing.JFrame {
      */
     private void cargarListadoNumeros() {
 
-        this.listadoNumeros.add("0");
         this.listadoNumeros.add("1");
         this.listadoNumeros.add("2");
         this.listadoNumeros.add("3");
@@ -439,6 +478,10 @@ public class Interfaz extends javax.swing.JFrame {
 
                 if (contador != posicionVacia) {
                     ((JButton) componente).setText(obtenerNumeroAleatorio());
+                } else {
+                    ((JButton) componente).requestFocus(true);
+                    this.fila = obtenerNumeroFilaBoton(((JButton) componente).getName());
+                    this.columna = obtenerNumeroColumnaBoton(((JButton) componente).getName());
                 }
 
                 contador++;
@@ -522,7 +565,7 @@ public class Interfaz extends javax.swing.JFrame {
                     }
 
                 } catch (Exception e) {
-                    System.out.println("Excepcion: " + e.getMessage());
+                    System.out.println("Excepcion Iniciando Reloj : " + e.getMessage());
                 }
 
             }
@@ -600,6 +643,129 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     /**
+     * Realiza el movimiento del cuadro blanco a la direccion que se le indique
+     */
+    private void moverCuadro(int direccion) {
+
+        boolean mover = false;
+
+        /* Posicion actual (Se guarda como la anterior en caso que haya cambios de posicion */
+        int fila_anterior = fila;
+        int columna_anterior = columna;
+
+        /* Posicion nueva (En caso que haya cambios se guardara aca*/
+        int fila_nueva;
+        int columna_nueva;
+
+        switch (direccion) {
+
+            case ARRIBA:
+
+                if (fila > 1) {
+                    mover = true;
+                    fila--;
+                }
+
+                break;
+
+            case ABAJO:
+
+                if (fila < MAX_FILAS) {
+                    mover = true;
+                    fila++;
+                }
+
+                break;
+
+            case IZQUIERDA:
+
+                if (columna > 1) {
+                    mover = true;
+                    columna--;
+                }
+
+                break;
+
+            case DERECHA:
+
+                if (columna < MAX_COLUMNAS) {
+                    mover = true;
+                    columna++;
+                }
+
+                break;
+
+        }
+
+        if (mover) {
+
+            fila_nueva = fila;
+            columna_nueva = columna;
+
+            realizarCambioPosicion(fila_anterior, columna_anterior, fila_nueva, columna_nueva);
+        }
+
+    }
+
+    /**
+     * Realiza el intercambio de valores entre las dos casillas
+     */
+    private void realizarCambioPosicion(int fila_anterior, int columna_anterior, int fila_nueva, int columna_nueva) {
+
+        /**
+         * Listado de componentes
+         */
+        Component[] componentes = this.panelContenedor.getComponents();
+        JButton posicion = null;
+
+        /**
+         * Nombre de las posiciones a intercambiar
+         */
+        String nombre_anterior = PREFIJO_POSICION + fila_anterior + "" + columna_anterior;
+        String nombre_nueva = PREFIJO_POSICION + fila_nueva + "" + columna_nueva;
+
+        /**
+         * Posiciones a intercambiar
+         */
+        JButton posicion_anterior = null;
+        JButton posicion_nueva = null;
+
+        /**
+         * Valores a intercambiar
+         */
+        String valor_anterior = null;
+        String valor_nueva = null;
+
+        for (Component componente : componentes) {
+
+            if (componente instanceof JButton) {
+
+                posicion = ((JButton) componente);
+
+                if (posicion.getName().equals(nombre_anterior)) {
+                    posicion_anterior = posicion;
+                    valor_anterior = posicion.getText();
+                }
+
+                if (posicion.getName().equals(nombre_nueva)) {
+                    posicion_nueva = posicion;
+                    valor_nueva = posicion.getText();
+                }
+
+            }
+
+        }
+
+        /**
+         * Intercambio de valores
+         */
+        if (posicion_anterior != null && posicion_nueva != null) {
+            posicion_anterior.setText(valor_nueva);
+            posicion_nueva.setText(valor_anterior);
+        }
+    }
+
+    /**
      * Obtiene el Objeto de una imagen del paquete de imagenes, basado en el
      * nombre de la misma.
      */
@@ -610,10 +776,47 @@ public class Interfaz extends javax.swing.JFrame {
         try {
             imagen = new ImageIcon(getClass().getResource("/imagenes/" + nombre)).getImage();
         } catch (Exception e) {
-            System.out.println("Excepcion abriendo imagen.");
+            System.out.println("Excepcion abriendo imagen : " + e.getMessage());
         }
 
         return imagen;
+    }
+
+    /**
+     * Obtiene el numero de la fila basado en el nombre del boton
+     */
+    private int obtenerNumeroFilaBoton(String nombre) {
+
+        int longitud = nombre.length();
+
+        return Character.getNumericValue(nombre.charAt(longitud - 2));
+    }
+
+    /**
+     * Obtiene el numero de la columna basado en el nombre del boton
+     */
+    private int obtenerNumeroColumnaBoton(String nombre) {
+
+        int longitud = nombre.length();
+
+        return Character.getNumericValue(nombre.charAt(longitud - 1));
+    }
+
+    /**
+     * Asigna el KeyListener a los botones(posiciones) del teclado
+     */
+    private void asignarListenerPosiciones() {
+
+        Component[] componentes = this.panelContenedor.getComponents();
+
+        for (Component componente : componentes) {
+
+            if (componente instanceof JButton) {
+                ((JButton) componente).addKeyListener(this);
+            }
+
+        }
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -634,4 +837,42 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JButton posicion_33;
     private javax.swing.JLabel reloj;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void keyTyped(KeyEvent key) {
+    }
+
+    @Override
+    public void keyPressed(KeyEvent key) {
+
+        int tecla = key.getKeyCode();
+
+        switch (tecla) {
+
+            case KeyEvent.VK_UP:
+                this.moverCuadro(ARRIBA);
+                break;
+
+            case KeyEvent.VK_DOWN:
+                this.moverCuadro(ABAJO);
+                break;
+
+            case KeyEvent.VK_LEFT:
+                this.moverCuadro(IZQUIERDA);
+                break;
+
+            case KeyEvent.VK_RIGHT:
+                this.moverCuadro(DERECHA);
+                break;
+
+            default:
+                JOptionPane.showMessageDialog(null, "Presione solo teclas de movimiento.");
+                break;
+        }
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent key) {
+    }
 }

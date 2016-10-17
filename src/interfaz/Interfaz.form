@@ -73,6 +73,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_11" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="posicion_12">
@@ -80,6 +81,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_12" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="posicion_13">
@@ -87,6 +89,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_13" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="posicion_21">
@@ -94,6 +97,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_21" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="posicion_22">
@@ -101,6 +105,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_22" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="posicion_23">
@@ -108,6 +113,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_23" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="posicion_31">
@@ -115,6 +121,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_31" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="posicion_32">
@@ -122,6 +129,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_32" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="posicion_33">
@@ -129,6 +137,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Monospaced" size="24" style="1"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="posicion_33" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>
