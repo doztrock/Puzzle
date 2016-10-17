@@ -202,48 +202,29 @@ public class Interfaz extends JFrame implements KeyListener {
         /*Asignamos los listeners a las posiciones del tablero*/
         asignarListenerPosiciones();
 
+        /*Asignamos los listener de los botones restantes*/
+        asignarListenerBotonesExtras();
+
     }//GEN-LAST:event_formWindowOpened
 
     private void botonEmpezarPausarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonEmpezarPausarActionPerformed
 
-        Image imagen;
-        ImageIcon icono;
-
         switch (ESTADO_JUEGO) {
 
             case JUEGO_INICIADO:
-
-                imagen = obtenerImagen("play.png");
-                icono = new ImageIcon(imagen);
-
-                botonEmpezarPausar.setIcon(icono);
-                reloj.setForeground(Color.RED);
-
-                ESTADO_JUEGO = JUEGO_PAUSADO;
                 pausarJuego();
                 break;
 
             case JUEGO_PAUSADO:
-
-                imagen = obtenerImagen("pause.png");
-                icono = new ImageIcon(imagen);
-
-                botonEmpezarPausar.setIcon(icono);
-                reloj.setForeground(Color.BLUE);
-
-                ESTADO_JUEGO = JUEGO_INICIADO;
                 reanudarJuego();
                 break;
 
+            case JUEGO_FINALIZADO:
+                reiniciarJuego();//Reestablece Elementos
+                iniciarJuego();//Inicia Juego
+                break;
+
             case JUEGO_NO_INICIADO:
-
-                imagen = obtenerImagen("pause.png");
-                icono = new ImageIcon(imagen);
-
-                botonEmpezarPausar.setIcon(icono);
-                reloj.setForeground(Color.BLUE);
-
-                ESTADO_JUEGO = JUEGO_INICIADO;
                 iniciarJuego();
                 break;
 
@@ -336,6 +317,12 @@ public class Interfaz extends JFrame implements KeyListener {
     private static final String PREFIJO_POSICION = "posicion_";
 
     /**
+     * Colores tablero
+     */
+    private static final Color COLOR_POSICION_NORMAL = Color.LIGHT_GRAY;
+    private static final Color COLOR_POSICION_VACIA = Color.GRAY;
+
+    /**
      * Numeros a mostrar en el tablero
      */
     private final ArrayList<String> listadoNumeros = new ArrayList<>();
@@ -366,14 +353,29 @@ public class Interfaz extends JFrame implements KeyListener {
      */
     private void iniciarJuego() {
 
+        Image imagen;
+        ImageIcon icono;
+
+        imagen = obtenerImagen("pause.png");
+        icono = new ImageIcon(imagen);
+
+        botonEmpezarPausar.setIcon(icono);
+        reloj.setForeground(Color.BLUE);
+
+        /*Numeros*/
         cargarListadoNumeros();
 
+        /*Tablero*/
         llenarTablero();
         habilitarTablero();
 
+        /*Reloj*/
         iniciarReloj();
 
+        /*Boton Reiniciar*/
         habilitarBotonReiniciar();
+
+        ESTADO_JUEGO = JUEGO_INICIADO;
 
     }
 
@@ -382,8 +384,19 @@ public class Interfaz extends JFrame implements KeyListener {
      */
     private void reanudarJuego() {
 
+        Image imagen;
+        ImageIcon icono;
+
+        imagen = obtenerImagen("pause.png");
+        icono = new ImageIcon(imagen);
+
+        botonEmpezarPausar.setIcon(icono);
+        reloj.setForeground(Color.BLUE);
+
         habilitarTablero();
         reanudarReloj();
+
+        ESTADO_JUEGO = JUEGO_INICIADO;
 
     }
 
@@ -392,9 +405,33 @@ public class Interfaz extends JFrame implements KeyListener {
      */
     private void pausarJuego() {
 
+        Image imagen;
+        ImageIcon icono;
+
+        imagen = obtenerImagen("play.png");
+        icono = new ImageIcon(imagen);
+
+        botonEmpezarPausar.setIcon(icono);
+        reloj.setForeground(Color.RED);
+
         deshabilitarTablero();
         detenerReloj();
 
+        ESTADO_JUEGO = JUEGO_PAUSADO;
+
+    }
+
+    /**
+     * Finaliza el juego
+     */
+    private void finalizarJuego() {
+
+        pausarJuego();
+        deshabilitarBotonReiniciar();
+
+        JOptionPane.showMessageDialog(null, "Felicitaciones!!!\nHas ganado!!!", "Informacion", JOptionPane.INFORMATION_MESSAGE);
+
+        ESTADO_JUEGO = JUEGO_FINALIZADO;
     }
 
     /**
@@ -477,11 +514,18 @@ public class Interfaz extends JFrame implements KeyListener {
             if (componente instanceof JButton) {
 
                 if (contador != posicionVacia) {
+
                     ((JButton) componente).setText(obtenerNumeroAleatorio());
+                    ((JButton) componente).setBackground(COLOR_POSICION_NORMAL);
+
                 } else {
+
                     ((JButton) componente).requestFocus(true);
+                    ((JButton) componente).setBackground(COLOR_POSICION_VACIA);
+
                     this.fila = obtenerNumeroFilaBoton(((JButton) componente).getName());
                     this.columna = obtenerNumeroColumnaBoton(((JButton) componente).getName());
+
                 }
 
                 contador++;
@@ -760,9 +804,51 @@ public class Interfaz extends JFrame implements KeyListener {
          * Intercambio de valores
          */
         if (posicion_anterior != null && posicion_nueva != null) {
+
             posicion_anterior.setText(valor_nueva);
+            posicion_anterior.setBackground(COLOR_POSICION_NORMAL);
+
             posicion_nueva.setText(valor_anterior);
+            posicion_nueva.setBackground(COLOR_POSICION_VACIA);
+
         }
+    }
+
+    /**
+     * Verifica si el usuario ya gano Y si es asi entonces detiene el juego y
+     * realiza la finalizacion del mismo
+     */
+    private void verificarTablero() {
+
+        Component[] componentes = this.panelContenedor.getComponents();
+        JButton posicion;
+        int contador = 1;
+
+        boolean usuarioGano = true;
+
+        for (Component componente : componentes) {
+
+            if (componente instanceof JButton) {
+
+                posicion = ((JButton) componente);
+
+                if (contador < (MAX_COLUMNAS * MAX_FILAS)) {
+
+                    if (!posicion.getText().equals(String.valueOf(contador))) {
+                        usuarioGano = false;
+                        break;
+                    }
+
+                }
+                contador++;
+            }
+
+        }
+
+        if (usuarioGano) {
+            finalizarJuego();
+        }
+
     }
 
     /**
@@ -819,6 +905,23 @@ public class Interfaz extends JFrame implements KeyListener {
 
     }
 
+    /**
+     * Asigna el KeyListener a los botones(Play/Pause, Musica, Reiniciar) del
+     * teclado
+     */
+    private void asignarListenerBotonesExtras() {
+
+        /*Boton Iniciar/Pausar/Reanudar*/
+        this.botonEmpezarPausar.addKeyListener(this);
+
+        /*Boton Musica*/
+        this.botonMusica.addKeyListener(this);
+
+        /*Boton Reiniciar*/
+        this.botonReiniciar.addKeyListener(this);
+
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonEmpezarPausar;
     private javax.swing.JButton botonMusica;
@@ -870,9 +973,24 @@ public class Interfaz extends JFrame implements KeyListener {
                 break;
         }
 
+        //NOTA: PENDIENTE que con espacio pause el juego
     }
 
     @Override
     public void keyReleased(KeyEvent key) {
+
+        int tecla = key.getKeyCode();
+
+        switch (tecla) {
+
+            case KeyEvent.VK_UP:
+            case KeyEvent.VK_DOWN:
+            case KeyEvent.VK_LEFT:
+            case KeyEvent.VK_RIGHT:
+                verificarTablero();
+                break;
+
+        }
+
     }
 }
