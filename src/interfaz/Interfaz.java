@@ -973,7 +973,6 @@ public class Interfaz extends JFrame implements KeyListener {
                 break;
         }
 
-        //NOTA: PENDIENTE que con espacio pause el juego
     }
 
     @Override
