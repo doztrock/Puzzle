@@ -701,52 +701,56 @@ public class Interfaz extends JFrame implements KeyListener {
         int fila_nueva;
         int columna_nueva;
 
-        switch (direccion) {
+        if (ESTADO_JUEGO == JUEGO_INICIADO) {
 
-            case ARRIBA:
+            switch (direccion) {
 
-                if (fila > 1) {
-                    mover = true;
-                    fila--;
-                }
+                case ARRIBA:
 
-                break;
+                    if (fila > 1) {
+                        mover = true;
+                        fila--;
+                    }
 
-            case ABAJO:
+                    break;
 
-                if (fila < MAX_FILAS) {
-                    mover = true;
-                    fila++;
-                }
+                case ABAJO:
 
-                break;
+                    if (fila < MAX_FILAS) {
+                        mover = true;
+                        fila++;
+                    }
 
-            case IZQUIERDA:
+                    break;
 
-                if (columna > 1) {
-                    mover = true;
-                    columna--;
-                }
+                case IZQUIERDA:
 
-                break;
+                    if (columna > 1) {
+                        mover = true;
+                        columna--;
+                    }
 
-            case DERECHA:
+                    break;
 
-                if (columna < MAX_COLUMNAS) {
-                    mover = true;
-                    columna++;
-                }
+                case DERECHA:
 
-                break;
+                    if (columna < MAX_COLUMNAS) {
+                        mover = true;
+                        columna++;
+                    }
 
-        }
+                    break;
 
-        if (mover) {
+            }
 
-            fila_nueva = fila;
-            columna_nueva = columna;
+            if (mover) {
 
-            realizarCambioPosicion(fila_anterior, columna_anterior, fila_nueva, columna_nueva);
+                fila_nueva = fila;
+                columna_nueva = columna;
+
+                realizarCambioPosicion(fila_anterior, columna_anterior, fila_nueva, columna_nueva);
+            }
+
         }
 
     }
