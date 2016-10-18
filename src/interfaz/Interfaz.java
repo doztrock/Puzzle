@@ -10,8 +10,12 @@ import java.awt.Component;
 import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 
 import java.util.ArrayList;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -119,7 +123,7 @@ public class Interfaz extends JFrame implements KeyListener {
             }
         });
 
-        botonMusica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/sonido.png"))); // NOI18N
+        botonMusica.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/sound.png"))); // NOI18N
         botonMusica.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 botonMusicaActionPerformed(evt);
@@ -144,18 +148,20 @@ public class Interfaz extends JFrame implements KeyListener {
                 .addContainerGap()
                 .addGroup(panelAdministradorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelAdministradorLayout.createSequentialGroup()
-                        .addComponent(botonReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(botonMusica, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panelAdministradorLayout.createSequentialGroup()
-                        .addComponent(labelTiempo, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(reloj)))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAdministradorLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(botonEmpezarPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59))
+                        .addGroup(panelAdministradorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelAdministradorLayout.createSequentialGroup()
+                                .addComponent(botonReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(botonMusica, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelAdministradorLayout.createSequentialGroup()
+                                .addComponent(labelTiempo, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(reloj)))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAdministradorLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(botonEmpezarPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(59, 59, 59))))
         );
         panelAdministradorLayout.setVerticalGroup(
             panelAdministradorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -166,7 +172,7 @@ public class Interfaz extends JFrame implements KeyListener {
                     .addComponent(reloj))
                 .addGap(110, 110, 110)
                 .addComponent(botonEmpezarPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
                 .addGroup(panelAdministradorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(botonMusica, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(botonReiniciar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -250,6 +256,17 @@ public class Interfaz extends JFrame implements KeyListener {
 
     private void botonMusicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_botonMusicaActionPerformed
 
+        switch (ESTADO_MUSICA) {
+
+            case MUSICA_ACTIVA:
+                inactivarMusica();
+                break;
+
+            case MUSICA_INACTIVA:
+                activarMusica();
+                break;
+
+        }
 
     }//GEN-LAST:event_botonMusicaActionPerformed
 
@@ -289,13 +306,20 @@ public class Interfaz extends JFrame implements KeyListener {
     }
 
     /**
-     * Estado del juego
+     * Estado del Juego
      */
     private final int JUEGO_NO_INICIADO = 0;
     private final int JUEGO_INICIADO = 1;
     private final int JUEGO_PAUSADO = 2;
     private final int JUEGO_FINALIZADO = 3;
     private int ESTADO_JUEGO = JUEGO_NO_INICIADO;
+
+    /**
+     * Estado de la musica
+     */
+    private final int MUSICA_ACTIVA = 1;
+    private final int MUSICA_INACTIVA = 2;
+    private int ESTADO_MUSICA = MUSICA_ACTIVA;
 
     /**
      * Direcciones de movimiento
@@ -342,11 +366,6 @@ public class Interfaz extends JFrame implements KeyListener {
      */
     private int fila = 0;
     private int columna = 0;
-
-    /**
-     * Musica
-     */
-    private boolean reproducirMusica = false;
 
     /**
      * Inicia el juego.
@@ -464,6 +483,38 @@ public class Interfaz extends JFrame implements KeyListener {
         //Estado del Juego 
         ESTADO_JUEGO = JUEGO_NO_INICIADO;
 
+    }
+
+    /**
+     * Activa la musica en el Juego
+     */
+    private void activarMusica() {
+
+        Image imagen;
+        ImageIcon icono;
+
+        imagen = obtenerImagen("sound.png");
+        icono = new ImageIcon(imagen);
+
+        botonMusica.setIcon(icono);
+
+        ESTADO_MUSICA = MUSICA_ACTIVA;
+    }
+
+    /**
+     * Inactiva la musica en el Juego
+     */
+    private void inactivarMusica() {
+
+        Image imagen;
+        ImageIcon icono;
+
+        imagen = obtenerImagen("mute.png");
+        icono = new ImageIcon(imagen);
+
+        botonMusica.setIcon(icono);
+
+        ESTADO_MUSICA = MUSICA_INACTIVA;
     }
 
     /**
@@ -675,8 +726,21 @@ public class Interfaz extends JFrame implements KeyListener {
     /**
      * Reproduce la musica.
      */
-    private void reproducirMusica(String nombre) {
+    private void reproducirMusica() {
 
+//        try {
+//
+//            AudioInputStream audioInput = AudioSystem.getAudioInputStream(new File("/media/ivan/DISCO/Universidad/Puzzle/src/sonidos/cancionaiff.aiff").getAbsoluteFile());
+//
+//            Clip clip = AudioSystem.getClip();
+//            
+//            clip.open(audioInput);
+//            
+//            clip.start();
+//            
+//        } catch (Exception e) {
+//            System.out.println("interfaz.Interfaz.reproducirMusica() : " + e.getMessage());
+//        }
     }
 
     /**
