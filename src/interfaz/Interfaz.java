@@ -59,7 +59,9 @@ public class Interfaz extends JFrame implements KeyListener {
         botonReiniciar = new javax.swing.JButton();
         botonMusica = new javax.swing.JButton();
         botonEmpezarPausar = new javax.swing.JButton();
+        labelMovimiento = new javax.swing.JLabel();
         labelTiempo = new javax.swing.JLabel();
+        contadorMovimiento = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Puzzle - Version 1.0");
@@ -137,8 +139,14 @@ public class Interfaz extends JFrame implements KeyListener {
             }
         });
 
+        labelMovimiento.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        labelMovimiento.setText("Movimientos:");
+
         labelTiempo.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         labelTiempo.setText("Tiempo:");
+
+        contadorMovimiento.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        contadorMovimiento.setText("0");
 
         javax.swing.GroupLayout panelAdministradorLayout = new javax.swing.GroupLayout(panelAdministrador);
         panelAdministrador.setLayout(panelAdministradorLayout);
@@ -159,18 +167,27 @@ public class Interfaz extends JFrame implements KeyListener {
                                 .addComponent(reloj)))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelAdministradorLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 46, Short.MAX_VALUE)
                         .addComponent(botonEmpezarPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(59, 59, 59))))
+                        .addGap(59, 59, 59))
+                    .addGroup(panelAdministradorLayout.createSequentialGroup()
+                        .addComponent(labelMovimiento)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(contadorMovimiento)
+                        .addContainerGap())))
         );
         panelAdministradorLayout.setVerticalGroup(
             panelAdministradorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelAdministradorLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panelAdministradorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelTiempo)
-                    .addComponent(reloj))
-                .addGap(110, 110, 110)
+                    .addComponent(reloj)
+                    .addComponent(labelTiempo))
+                .addGap(18, 18, 18)
+                .addGroup(panelAdministradorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labelMovimiento)
+                    .addComponent(contadorMovimiento))
+                .addGap(70, 70, 70)
                 .addComponent(botonEmpezarPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 95, Short.MAX_VALUE)
                 .addGroup(panelAdministradorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -368,6 +385,11 @@ public class Interfaz extends JFrame implements KeyListener {
     private int columna = 0;
 
     /**
+     * Cantidad de movimientos
+     */
+    private int movimentos = 0;
+
+    /**
      * Inicia el juego.
      */
     private void iniciarJuego() {
@@ -479,6 +501,10 @@ public class Interfaz extends JFrame implements KeyListener {
 
         //Boton <reiniciar>
         deshabilitarBotonReiniciar();
+
+        //Movimientos
+        movimentos = 0;
+        contadorMovimiento.setText("" + movimentos);
 
         //Estado del Juego 
         ESTADO_JUEGO = JUEGO_NO_INICIADO;
@@ -813,6 +839,8 @@ public class Interfaz extends JFrame implements KeyListener {
                 columna_nueva = columna;
 
                 realizarCambioPosicion(fila_anterior, columna_anterior, fila_nueva, columna_nueva);
+
+                aumentarContadorMovimiento();
             }
 
         }
@@ -990,10 +1018,19 @@ public class Interfaz extends JFrame implements KeyListener {
 
     }
 
+    /**
+     * Aumenta el contador de movimientos
+     */
+    private void aumentarContadorMovimiento() {
+        contadorMovimiento.setText("" + (++movimentos));
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton botonEmpezarPausar;
     private javax.swing.JButton botonMusica;
     private javax.swing.JButton botonReiniciar;
+    private javax.swing.JLabel contadorMovimiento;
+    private javax.swing.JLabel labelMovimiento;
     private javax.swing.JLabel labelTiempo;
     private javax.swing.JPanel panelAdministrador;
     private javax.swing.JPanel panelContenedor;
